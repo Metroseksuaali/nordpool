@@ -21,5 +21,25 @@
             "name_exists": "Name already exists",
             "invalid_template": "The template is invalid, check https://github.com/custom-components/nordpool"
         }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Nordpool Options",
+                "description": "Configure your Nordpool sensor settings. Note: Region cannot be changed after setup.",
+                "data": {
+                    "currency": "Currency",
+                    "VAT": "Include VAT",
+                    "precision": "Decimal rounding precision",
+                    "low_price_cutoff": "Low price percentage",
+                    "price_in_cents": "Price in cents",
+                    "price_type": "Energy scale",
+                    "additional_costs": "Template for additional costs"
+                }
+            }
+        },
+        "error": {
+            "invalid_template": "The template is invalid, check https://github.com/custom-components/nordpool"
+        }
     }
 }

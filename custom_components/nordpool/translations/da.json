@@ -22,5 +22,25 @@
             "name_exists": "Navnet eksisterer allerede",
             "invalid_template": "Skabelonen indeholder fejl, se https://github.com/custom-components/nordpool"
         }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Nordpool Indstillinger",
+                "description": "Konfigurer dine Nordpool-sensorindstillinger. Bemærk: Region kan ikke ændres efter opsætning.",
+                "data": {
+                    "currency": "Valuta",
+                    "VAT": "Inkludér moms",
+                    "precision": "Antal decimaler som vises",
+                    "low_price_cutoff": "Grænse for lav-pris",
+                    "price_in_cents": "Pris i øre",
+                    "price_type": "Prisformat",
+                    "additional_costs": "Skabelon for yderligere omkostninger"
+                }
+            }
+        },
+        "error": {
+            "invalid_template": "Skabelonen indeholder fejl, se https://github.com/custom-components/nordpool"
+        }
     }
 }

@@ -22,5 +22,25 @@
             "name_exists": "Nimi on jo käytössä",
             "invalid_template": "Template on virheellinen, katso https://github.com/custom-components/nordpool"
         }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Nordpool asetukset",
+                "description": "Muokkaa Nordpool sensorin asetuksia. Huomio: Aluetta ei voi muuttaa asennuksen jälkeen.",
+                "data": {
+                    "currency": "Valuutta",
+                    "VAT": "Sisällytä ALV",
+                    "precision": "Desimaalien lukumäärä",
+                    "low_price_cutoff": "Matalan hinnan raja-arvo",
+                    "price_in_cents": "Hinta senteissä",
+                    "price_type": "Hinnan yksikkö",
+                    "additional_costs": "Sivukulujen laskenta Template"
+                }
+            }
+        },
+        "error": {
+            "invalid_template": "Template on virheellinen, katso https://github.com/custom-components/nordpool"
+        }
     }
 }

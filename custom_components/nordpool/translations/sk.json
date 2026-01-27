@@ -21,5 +21,25 @@
             "name_exists": "Názov už existuje",
             "invalid_template": "Šablóna je neplatná, skontrolujte https://github.com/custom-components/nordpool"
         }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Nordpool Nastavenia",
+                "description": "Nakonfigurujte nastavenia snímača Nordpool. Poznámka: Región nie je možné zmeniť po nastavení.",
+                "data": {
+                    "currency": "Mena",
+                    "VAT": "Vrátane DPH",
+                    "precision": "Presnosť desatinného zaokrúhľovania",
+                    "low_price_cutoff": "Nízke percento ceny",
+                    "price_in_cents": "Cena v centoch",
+                    "price_type": "Energetická stupnica",
+                    "additional_costs": "Šablóna pre dodatočné náklady"
+                }
+            }
+        },
+        "error": {
+            "invalid_template": "Šablóna je neplatná, skontrolujte https://github.com/custom-components/nordpool"
+        }
     }
 }

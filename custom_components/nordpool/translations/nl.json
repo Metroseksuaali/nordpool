@@ -21,5 +21,25 @@
             "name_exists": "Naam bestaat al",
             "invalid_template": "Het template is ongeldig, zie https://github.com/custom-components/nordpool"
         }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Nordpool Instellingen",
+                "description": "Configureer uw Nordpool sensor instellingen. Let op: Regio kan niet worden gewijzigd na installatie.",
+                "data": {
+                    "currency": "Munteenheid",
+                    "VAT": "Inclusief BTW",
+                    "precision": "Decimalen afronden",
+                    "low_price_cutoff": "Precentage lage prijs",
+                    "price_in_cents": "Prijs in centen",
+                    "price_type": "Energie schaal",
+                    "additional_costs": "Template voor extra kosten"
+                }
+            }
+        },
+        "error": {
+            "invalid_template": "Het template is ongeldig, zie https://github.com/custom-components/nordpool"
+        }
     }
 }

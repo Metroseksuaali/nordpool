@@ -59,7 +59,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 )
 
 
-def _dry_setup(hass, config, add_devices, discovery_info=None):
+def _dry_setup(hass, config, add_devices, discovery_info=None, config_entry=None):
     """Setup the damn platform using yaml."""
     _LOGGER.debug("Dumping config %r", config)
     _LOGGER.debug("timezone set in ha %r", hass.config.time_zone)
@@ -85,6 +85,7 @@ def _dry_setup(hass, config, add_devices, discovery_info=None):
         api,
         ad_template,
         hass,
+        config_entry,
     )
 
     add_devices([sensor])
@@ -97,8 +98,9 @@ async def async_setup_platform(hass, config, add_devices, discovery_info=None) -
 
 async def async_setup_entry(hass, config_entry, async_add_devices):
     """Setup sensor platform for the ui"""
-    config = config_entry.data
-    _dry_setup(hass, config, async_add_devices)
+    # Merge data and options, with options taking precedence
+    config = {**config_entry.data, **config_entry.options}
+    _dry_setup(hass, config, async_add_devices, config_entry=config_entry)
     return True
 
 
@@ -126,6 +128,7 @@ class NordpoolSensor(SensorEntity):
         api,
         ad_template,
         hass,
+        config_entry=None,
     ) -> None:
         self._area = area
         self._currency = currency or _REGIONS[area][0]
@@ -138,6 +141,7 @@ class NordpoolSensor(SensorEntity):
         self._api = api
         self._ad_template = ad_template
         self._hass = hass
+        self._config_entry = config_entry
         self._attr_force_update = True
 
         if vat is True:
@@ -206,6 +210,11 @@ class NordpoolSensor(SensorEntity):
 
     @property
     def unique_id(self):
+        # Use entry_id for UI-configured sensors (stable across option changes)
+        # Fall back to legacy format for YAML-configured sensors
+        if self._config_entry is not None:
+            return f"nordpool_{self._config_entry.entry_id}"
+        # Legacy unique_id for YAML configurations
         name = "nordpool_%s_%s_%s_%s_%s_%s" % (
             self._price_type,
             self._area,

@@ -67,7 +67,15 @@ mv nordpool-X.Y.Z/custom_components/nordpool/* .
 - Search for `nordpool` and select it
 - Fill in the required values and press `Submit`
 
-Tip: By default, the integration will create a device with the name `nordpool_<energy_scale>_<region>_<currency>_<some-numbers>`. It is recommended to rename the device and all its entities to `nordpool`. If you need to recreate your sensor (for example, to change the additional cost), all automations and dashboards keep working.
+#### Changing settings after installation
+To modify settings after installation:
+- Go to `Settings` -> `Devices & Services` -> `Nordpool`
+- Click `Configure` on your sensor entry
+- Adjust settings and click `Submit`
+
+Note: Region cannot be changed after initial setup. All other settings can be modified.
+
+Tip: By default, the integration will create a device with the name `nordpool_<entry_id>`. It is recommended to rename the device and all its entities to something meaningful like `nordpool`.
 
 ### Option 2: YAML
 Set up the sensor using in `configuration.yaml`.
@@ -140,7 +148,7 @@ There are two special special arguments in that can be used in the template ([in
 - ```now()```: this always refer to the current hour of the price
 - ```current_price```: price for the current hour. This can be used for example be used to calculate your own VAT or add overhead cost.
 
-Note: When configuring Nordpool using the UI, things like VAT and additional costs cannot be changed. If your energy supplier or region changes the additional costs or taxes on a semi-regular basis, the YAML configuration or a helper (example 4) work best.
+Note: When configuring Nordpool using the UI, you can change settings after installation by clicking the "Configure" button on the integration page. Region cannot be changed after initial setup. If your energy supplier changes additional costs or taxes frequently, using a helper (example 4) is recommended.
 
 #### Example 1: Overhead per kWh
 

@@ -22,5 +22,25 @@
             "name_exists": "Namnet existerar redan",
             "invalid_template": "Mallen är ogiltig, se https://github.com/custom-components/nordpool"
         }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Nord Pool Inställningar",
+                "description": "Konfigurera dina Nord Pool-sensorinställningar. Obs: Region kan inte ändras efter installation.",
+                "data": {
+                    "currency": "Valuta",
+                    "VAT": "Inkludera moms",
+                    "precision": "Hur många decimaler ska visas",
+                    "low_price_cutoff": "Lägsta prisnivå",
+                    "price_in_cents": "Pris i ören",
+                    "price_type": "Prisformat",
+                    "additional_costs": "Mall för ytterligare kostnader"
+                }
+            }
+        },
+        "error": {
+            "invalid_template": "Mallen är ogiltig, se https://github.com/custom-components/nordpool"
+        }
     }
 }
