@@ -85,7 +85,7 @@ async def async_setup_services(hass: HomeAssistant):
         sc = service_call.data
         _LOGGER.debug("called weekly with %r", sc)
 
-        value = await AioPrices(sc["currency"], client).yearly(
+        value = await AioPrices(sc["currency"], client).weekly(
             areas=sc["area"], end_date=sc["year"]
         )
 
