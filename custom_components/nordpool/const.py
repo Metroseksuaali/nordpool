@@ -90,7 +90,7 @@ AREA_TO_COUNTRY = {
     "DE-LU": "DE-LU",
     "FR": "FR",
     "NL": "NL",
-    "PL ": "PL",
+    "PL": "PL",
 }
 
 INVALID_VALUES = frozenset((None, float("inf")))
