@@ -121,7 +121,7 @@ class AioPrices:
             return timezone("Europe/Stockholm").localize(time).astimezone(utc)
         return time.astimezone(utc)
 
-    def _parse_json(self, data, areas=None, data_type=None):
+    def _parse_json(self, data, areas=None, data_type=None, aggregation=None):
         """
         Parse json response from fetcher.
         Returns dictionary with
@@ -142,16 +142,16 @@ class AioPrices:
 
         _LOGGER.debug("data type in _parser %s, areas %s", data_type, areas)
 
-        # Ripped from Kipe's nordpool
-        if data_type == self.HOURLY:
+        # Select the correct data source based on aggregation level
+        if aggregation == "hourly":
             data_source = ("multiAreaEntries", "entryPerArea")
-        elif data_type == self.DAILY:
+        elif aggregation == "daily":
             data_source = ("multiAreaDailyAggregates", "averagePerArea")
-        elif data_type == self.WEEKLY:
+        elif aggregation == "weekly":
             data_source = ("multiAreaWeeklyAggregates", "averagePerArea")
-        elif data_type == self.MONTHLY:
+        elif aggregation == "monthly":
             data_source = ("multiAreaMonthlyAggregates", "averagePerArea")
-        elif data_type == self.YEARLY:
+        elif aggregation == "yearly":
             data_source = ("prices", "averagePerArea")
         else:
             data_source = ("multiAreaEntries", "entryPerArea")
@@ -249,7 +249,7 @@ class AioPrices:
     # @backoff.on_exception(
     #    backoff.expo, (aiohttp.ClientError, KeyError), logger=_LOGGER, max_value=20
     # )
-    async def fetch(self, data_type, end_date=None, areas=None, raw=False):
+    async def fetch(self, data_type, end_date=None, areas=None, raw=False, aggregation=None):
         """
         Fetch data from API.
         Inputs:
@@ -294,57 +294,59 @@ class AioPrices:
                 self._fetch_json(data_type, tomorrow, areas),
             ]
         else:
-            # This is really not today but a year..
-            # All except from hourly returns the raw values
-            return await self._fetch_json(data_type, today, areas)
+            # All except from hourly returns a single response
+            raw_data = await self._fetch_json(data_type, today, areas)
+            if raw_data is None:
+                return None
+            return await self._async_parse_json(raw_data, areas, data_type=data_type, aggregation=aggregation)
 
         res = await asyncio.gather(*jobs)
         raw = [
-            await self._async_parse_json(i, areas, data_type=data_type)
+            await self._async_parse_json(i, areas, data_type=data_type, aggregation=aggregation)
             for i in res
             if i
         ]
 
         return await join_result_for_correct_time(raw, end_date)
 
-    async def _async_parse_json(self, data, areas, data_type):
+    async def _async_parse_json(self, data, areas, data_type, aggregation=None):
         """
         Async version of _parse_json to prevent blocking calls inside the event loop.
         """
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(
-            None, self._parse_json, data, areas, data_type
+            None, self._parse_json, data, areas, data_type, aggregation
         )
 
     async def hourly(self, end_date=None, areas=None, raw=False):
         """Helper to fetch hourly data, see Prices.fetch()"""
         if areas is None:
             areas = []
-        return await self.fetch(self.HOURLY, end_date, areas, raw=raw)
+        return await self.fetch(self.HOURLY, end_date, areas, raw=raw, aggregation="hourly")
 
     async def daily(self, end_date=None, areas=None):
         """Helper to fetch daily data, see Prices.fetch()"""
         if areas is None:
             areas = []
-        return await self.fetch(self.DAILY, end_date, areas)
+        return await self.fetch(self.DAILY, end_date, areas, aggregation="daily")
 
     async def weekly(self, end_date=None, areas=None):
         """Helper to fetch weekly data, see Prices.fetch()"""
         if areas is None:
             areas = []
-        return await self.fetch(self.WEEKLY, end_date, areas)
+        return await self.fetch(self.WEEKLY, end_date, areas, aggregation="weekly")
 
     async def monthly(self, end_date=None, areas=None):
         """Helper to fetch monthly data, see Prices.fetch()"""
         if areas is None:
             areas = []
-        return await self.fetch(self.MONTHLY, end_date, areas)
+        return await self.fetch(self.MONTHLY, end_date, areas, aggregation="monthly")
 
     async def yearly(self, end_date=None, areas=None):
         """Helper to fetch yearly data, see Prices.fetch()"""
         if areas is None:
             areas = []
-        return await self.fetch(self.YEARLY, end_date, areas)
+        return await self.fetch(self.YEARLY, end_date, areas, aggregation="yearly")
 
     def _conv_to_float(self, s):
         """Convert numbers to float. Return infinity, if conversion fails."""
