@@ -219,24 +219,77 @@ Add 21% tax and overhead cost stored in a helper
 - ```price_in_cents```: Boolean if prices is in cents
 
 ## Actions
-Actions has recently been added. The action will just forward the raw response from the Nordpool API so you can capture the value your are interested in.
 
-Example for an automation that get the last months averge price.
+The following actions are available for fetching Nordpool price data:
+
+| Action | Description |
+|--------|-------------|
+| `nordpool.hourly` | Hourly prices (today + tomorrow if available) |
+| `nordpool.daily` | Daily average prices for the current month |
+| `nordpool.weekly` | Weekly average prices |
+| `nordpool.monthly` | Monthly average prices |
+| `nordpool.yearly` | Yearly average prices |
+
+All actions accept `currency`, `area` and optionally `year` as parameters.
+The `nordpool.hourly` action also accepts an optional `date` parameter.
+
+### Response structure
+
+All actions return data in the following format:
+
 ```yaml
-alias: Example automation action call with storing with parsing and storing result
+start: "2025-12-31T23:00:00+00:00"
+end: "2021-12-30T23:00:00+00:00"
+updated: "2024-03-26T13:32:39.733019+00:00"
+currency: NOK
+areas:
+  NO2:
+    values:
+      - start: "2025-12-31T23:00:00+00:00"
+        end: "2026-01-30T23:00:00+00:00"
+        value: 1230.05
+      - start: "2024-12-31T23:00:00+00:00"
+        end: "2025-12-30T23:00:00+00:00"
+        value: 767.23
+```
+
+To access a value in a template, use: `{{ np_result.areas.<AREA>.values[<index>].value }}`
+
+### Example: Store yearly average price
+
+```yaml
+alias: Get yearly average price from Nordpool
 triggers: null
 actions:
   - action: nordpool.yearly
     data:
       currency: NOK
       area: NO2
-      year: "2024"
     response_variable: np_result
   - action: input_text.set_value
     target:
-      entity_id: input_text.test
+      entity_id: input_text.yearly_price
     data:
-      value: "{{np_result.prices[0].averagePerArea.NO2 | float}}"
+      value: "{{ np_result.areas.NO2.values[0].value | float }}"
+mode: single
+```
+
+### Example: Store this month's average price
+
+```yaml
+alias: Get monthly average price from Nordpool
+triggers: null
+actions:
+  - action: nordpool.monthly
+    data:
+      currency: EUR
+      area: FI
+    response_variable: np_result
+  - action: input_text.set_value
+    target:
+      entity_id: input_text.monthly_price
+    data:
+      value: "{{ np_result.areas.FI.values[0].value | float }}"
 mode: single
 ```
 
