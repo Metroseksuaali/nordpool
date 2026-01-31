@@ -350,9 +350,9 @@ class AioPrices:
 
     def _conv_to_float(self, s):
         """Convert numbers to float. Return infinity, if conversion fails."""
-        # Skip if already float
-        if isinstance(s, float):
-            return s
+        # Skip if already numeric
+        if isinstance(s, (int, float)):
+            return float(s)
         try:
             return float(s.replace(",", ".").replace(" ", ""))
         except ValueError:
