@@ -253,7 +253,9 @@ areas:
         value: 767.23
 ```
 
-To access a value in a template, use: `{{ np_result.areas.<AREA>.values[<index>].value }}`
+To access a value in a template, use: `{{ np_result.areas.<AREA>["values"][<index>].value }}`
+
+> **Note:** Use bracket notation `["values"]` instead of `.values` to avoid conflicts with Jinja2's built-in `dict.values()` method.
 
 ### Example: Store yearly average price
 
@@ -270,7 +272,7 @@ actions:
     target:
       entity_id: input_text.yearly_price
     data:
-      value: "{{ np_result.areas.NO2.values[0].value | float }}"
+      value: "{{ np_result.areas.NO2[\"values\"][0].value | float }}"
 mode: single
 ```
 
@@ -289,7 +291,7 @@ actions:
     target:
       entity_id: input_text.monthly_price
     data:
-      value: "{{ np_result.areas.FI.values[0].value | float }}"
+      value: "{{ np_result.areas.FI[\"values\"][0].value | float }}"
 mode: single
 ```
 
