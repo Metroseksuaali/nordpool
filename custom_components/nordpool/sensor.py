@@ -314,9 +314,11 @@ class NordpoolSensor(SensorEntity):
         self._average = mean(today)
         self._min = min(today)
         self._max = max(today)
-        self._off_peak_1 = mean(today[0:8])
-        self._off_peak_2 = mean(today[20:])
-        self._peak = mean(today[8:20])
+        # Calculate entries per hour to support both hourly (24) and quarterly (96) data
+        h = max(len(today) // 24, 1)
+        self._off_peak_1 = mean(today[0 : 8 * h])
+        self._off_peak_2 = mean(today[20 * h :])
+        self._peak = mean(today[8 * h : 20 * h])
         self._mean = median(today)
 
     @property
@@ -424,7 +426,9 @@ class NordpoolSensor(SensorEntity):
     def tomorrow_valid(self) -> bool:
         """Verify that we have the values for tomorrow."""
         # this should be checked a better way
-        return len([i for i in self.tomorrow if i not in (None, float("inf"))]) >= 23
+        # Use today's data length to determine expected entry count (24 hourly or 96 quarterly)
+        today_len = len(self.today) if self.today else 24
+        return len([i for i in self.tomorrow if i not in (None, float("inf"))]) >= today_len - 1
 
     async def _update_current_price(self) -> None:
         """update the current price (price this hour)"""

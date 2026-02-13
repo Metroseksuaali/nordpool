@@ -124,9 +124,11 @@ def extract_attrs(data) -> dict:
 
     if len(data):
         data = sorted(data, key=itemgetter("start"))
-        offpeak1 = [i.get("value") for i in data[0:8]]
-        peak = [i.get("value") for i in data[8:20]]
-        offpeak2 = [i.get("value") for i in data[20:]]
+        # Calculate entries per hour to support both hourly (24) and quarterly (96) data
+        h = max(len(data) // 24, 1)
+        offpeak1 = [i.get("value") for i in data[0 : 8 * h]]
+        peak = [i.get("value") for i in data[8 * h : 20 * h]]
+        offpeak2 = [i.get("value") for i in data[20 * h :]]
 
         d["Peak"] = mean(peak)
         d["Off-peak 1"] = mean(offpeak1)
